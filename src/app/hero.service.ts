@@ -5,9 +5,14 @@ import { Observable, of } from 'rxjs';
 import { Hero } from './hero';
 import { catchError, map, tap } from 'rxjs/operators';
 
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class HeroService {
 
   private heroesUrl = 'api/heroes'; // WebAPI の URL
@@ -37,7 +42,15 @@ export class HeroService {
     return this.http.get<Hero>(url)
       .pipe(
         tap(_ => this.log(`fetched hero id=${id}`)),
-        catchError(this.handleError<Hero>(`getHero id = ${id}`)
+        catchError(this.handleError<Hero>(`getHero id = ${id}`))
+      );
+  }
+
+  updateHero(hero: Hero): Observable<any> {
+    return this.http.put(this.heroesUrl, hero, httpOptions)
+      .pipe(
+        tap(_ => this.log(`updated hero id=${hero.id}`)),
+        catchError(this.handleError<any>('updateHero'))
       );
   }
 
