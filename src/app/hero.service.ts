@@ -14,8 +14,7 @@ const httpOptions = {
 })
 
 export class HeroService {
-
-  private heroesUrl = 'api/heroes'; // WebAPI の URL
+    private heroesUrl = 'api/heroes'; // WebAPI の URL
 
   constructor(
     private http: HttpClient,
@@ -43,6 +42,14 @@ export class HeroService {
       .pipe(
         tap(_ => this.log(`fetched hero id=${id}`)),
         catchError(this.handleError<Hero>(`getHero id = ${id}`))
+      );
+  }
+
+  addHero(hero: Hero): Observable<Hero> {
+    return this.http.post<Hero>(this.heroesUrl, hero, httpOptions)
+      .pipe(
+          tap((hero: Hero) => this.log(`added hero w/ ${hero.id}`)),
+          catchError(this.handleError<Hero>(`addHero`))
       );
   }
 
